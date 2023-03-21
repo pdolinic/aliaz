@@ -12,7 +12,7 @@
 ## Authors: pdolinic, GPT-4
 
 #---
-# Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSHRC
+# Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSH
 
 # Info: The code creates ~/.aliaz where you can find your aliaz history
 
