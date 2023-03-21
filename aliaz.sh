@@ -13,8 +13,16 @@
 ##
 ## Authors: pdolinic, GPT-4
 ##
+
+#---
 # Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSHRC
-# Info: This creates a  ~/.aliaz File
+
+# Info: The code creates a  ~/.aliaz File
+
+#aliaz               # Creates an alias with the name of the current directory pointing to the current directory
+#aliaz my_alias      # Creates an alias named "my_alias" pointing to the current directory
+#aliaz my_alias ~/example_dir  # Creates an alias named "my_alias" pointing to the "~/example_dir" directory
+#---
 
 # Aliaz -start
 # Custom 'cd' function to support directory aliases
