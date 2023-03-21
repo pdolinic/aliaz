@@ -78,6 +78,7 @@ aliaz() {
 # If the '.aliaz' file does not exist, create an empty file
 if [ ! -f ~/.aliaz ]; then
     touch ~/.aliaz
+    chmod 600 ~/.aliaz 
 fi
 # Load the aliases from the '.aliaz' file into the current session
 declare -A dir_aliases
