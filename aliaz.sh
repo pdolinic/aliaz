@@ -11,15 +11,19 @@
 
 ## Authors: pdolinic, GPT-4
 
-#---
+#--------------------------------------------------------------------------------------------------------------------------------
 # Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSH
-
+#--------------------------------------------------------------------------------------------------------------------------------
 # Info: The code creates ~/.aliaz where you can find your aliaz history
+#--------------------------------------------------------------------------------------------------------------------------------
+# aliaz                # Creates an alias with the name of the current directory pointing to the current directory
+# aliaz my_alias       # Creates an alias named "my_alias" pointing to the current directory
+# aliaz my_alias ~/example_dir  # Creates an alias named "my_alias" pointing to the "~/example_dir" directory
+#--------------------------------------------------------------------------------------------------------------------------------
+# aliac my_alias             # Executes the command associated with the "my_alias" alias
+# aliac my_alias = command [args] # Creates an alias named "my_alias" with the command "command" and optional arguments "args"
+#--------------------------------------------------------------------------------------------------------------------------------
 
-#aliaz               # Creates an alias with the name of the current directory pointing to the current directory
-#aliaz my_alias      # Creates an alias named "my_alias" pointing to the current directory
-#aliaz my_alias ~/example_dir  # Creates an alias named "my_alias" pointing to the "~/example_dir" directory
-#---
 
 #               
 #  ▄▄▄       ██▓     ██▓ ▄▄▄      ▒███████▒
@@ -74,13 +78,41 @@ aliaz() {
     echo "aliaz created: $alias_name -> $dir_path"
 }
 
-# Save aliases between sessions
-# If the '.aliaz' file does not exist, create an empty file
-if [ ! -f ~/.aliaz ]; then
-    touch ~/.aliaz
-    chmod 600 ~/.aliaz 
-fi
-# Load the aliases from the '.aliaz' file into the current session
-declare -A dir_aliases
+aliac() {
+    if [ "$#" -eq 1 ]; then
+        if declare -f "$1" >/dev/null; then
+            eval "$1"
+        else
+            echo "Unknown parameter: $1"
+        fi
+    elif [ "$#" -gt 2 ]; then
+        command_name=$1
+        shift
+
+        # Check for the equal sign and remove it from the arguments
+        if [ "$1" = "=" ]; then
+            shift
+        fi
+
+        command_value="$*"
+        echo "function $command_name() { $command_value; }" >> ~/.command_aliac
+        eval "function $command_name() { $command_value; }"
+        echo "Command alias created: $command_name -> $command_value"
+    else
+        echo "Usage: aliac [alias] [=] [command] [args] or aliac [alias]"
+    fi
+}
+
+# Create ~/.aliaz || ~/.command_aliac if they do not exist
+[ ! -f ~/.aliaz ] && { touch ~/.aliaz; chmod 600 ~/.aliaz; }
+[ ! -f ~/.command_aliac ] && { touch ~/.command_aliac; chmod 600 ~/.command_aliac; }
+
+# Load the directory and command aliases into the current session
+declare -A dir_aliases command_aliases
 source ~/.aliaz
-## aliaz -end
+source ~/.command_aliac
+
+# Load the command aliases from the '.command_aliac' file into the current session
+while IFS= read -r line; do
+    eval "$line"
+done < ~/.comman
