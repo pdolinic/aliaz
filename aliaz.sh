@@ -37,9 +37,9 @@
 #       ░  ░    ░  ░ ░        ░  ░  ░ ░
 #                                 ░
 
-# aliaz -start
-# Custom 'cd' function to support directory aliases
+#--------------------------------------------------------------------------------------------------------------------------------
 cd() {
+    # Custom 'cd' function to support directory aliases
     # If no argument is provided, use the default 'cd' behavior to navigate to the home directory
     if [ -z "$1" ]; then
         builtin cd
@@ -69,7 +69,6 @@ aliaz() {
         echo "Usage: aliaz [alias] [path]"
         return
     fi
-
     # Add the alias and its associated path to the 'dir_aliases' associative array
     dir_aliases[$alias_name]=$dir_path
     # Save the alias to the '.aliaz' file for persistence
@@ -79,23 +78,29 @@ aliaz() {
 }
 
 aliac() {
+    # If only one argument is provided, attempt to execute the aliac with the given name
     if [ "$#" -eq 1 ]; then
         if declare -f "$1" >/dev/null; then
+            # Execute the aliac if it exists
             eval "$1"
         else
             echo "Unknown parameter: $1"
         fi
+    # If more than two arguments are provided, create a new aliac with the given name and command
     elif [ "$#" -gt 2 ]; then
+        # Set the command_name variable to the first argument
         command_name=$1
+        # Shift the arguments to remove the command_name from the arguments list
         shift
-
         # Check for the equal sign and remove it from the arguments
         if [ "$1" = "=" ]; then
             shift
         fi
-
+        # Combine the remaining arguments into the command_value variable
         command_value="$*"
+        # Add the new aliac to the .command_aliac file for persistence
         echo "function $command_name() { $command_value; }" >> ~/.command_aliac
+        # Create the new aliac in the current session
         eval "function $command_name() { $command_value; }"
         echo "Command alias created: $command_name -> $command_value"
     else
@@ -115,4 +120,6 @@ source ~/.command_aliac
 # Load the command aliases from the '.command_aliac' file into the current session
 while IFS= read -r line; do
     eval "$line"
-done < ~/.comman
+done < ~/.command_aliac
+#--------------------------------------------------------------------------------------------------------------------------------
+
