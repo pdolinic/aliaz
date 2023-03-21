@@ -13,12 +13,10 @@
 ##
 ## Authors: pdolinic, GPT-4
 ##
-
 # Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSHRC
-# Info: This creates a  ~/.aliaz
+# Info: This creates a  ~/.aliaz File
 
 # Aliaz -start
-
 # Custom 'cd' function to support directory aliases
 cd() {
     # If no argument is provided, use the default 'cd' behavior to navigate to the home directory
@@ -33,28 +31,30 @@ cd() {
     fi
 }
 
-# Function to create a directory alias
 aliaz() {
-    # If no arguments are provided, display usage information
-    if [ "$#" -lt 1 ]; then
-        echo "Usage: aliaz <alias> [path]"
-    else
-        # Set the alias name to the first argument
+    # If no arguments are provided, set the alias name to the name of the current directory
+    if [ "$#" -eq 0 ]; then
+        alias_name=$(basename "$(realpath -e .)")
+        dir_path=$(realpath -e .)
+    # If one argument is provided, set the alias name to the provided argument and the path to the current directory
+    elif [ "$#" -eq 1 ]; then
         alias_name=$1
-        # If a path is provided as the second argument, set 'dir_path' to the provided path
-        if [ "$#" -eq 2 ]; then
-            dir_path=$(realpath -e $2)
-        # If no path is provided, set 'dir_path' to the current directory
-        else
-            dir_path=$(realpath -e .)
-        fi
-        # Add the alias and its associated path to the 'dir_aliases' associative array
-        dir_aliases[$alias_name]=$dir_path
-        # Save the alias to the '.aliaz' file for persistence
-        echo "dir_aliases[$alias_name]=\"$dir_path\"" >> ~/.aliaz
-        # Display a confirmation message with the created alias and its associated path
-        echo "Alias created: $alias_name -> $dir_path"
+        dir_path=$(realpath -e .)
+    # If two arguments are provided, set the alias name to the first argument and the path to the second argument
+    elif [ "$#" -eq 2 ]; then
+        alias_name=$1
+        dir_path=$(realpath -e $2)
+    else
+        echo "Usage: aliaz [alias] [path]"
+        return
     fi
+
+    # Add the alias and its associated path to the 'dir_aliases' associative array
+    dir_aliases[$alias_name]=$dir_path
+    # Save the alias to the '.aliaz' file for persistence
+    echo "dir_aliases[$alias_name]=\"$dir_path\"" >> ~/.aliaz
+    # Display a confirmation message with the created alias and its associated path
+    echo "Alias created: $alias_name -> $dir_path"
 }
 
 # Save aliases between sessions
@@ -65,5 +65,4 @@ fi
 # Load the aliases from the '.aliaz' file into the current session
 declare -A dir_aliases
 source ~/.aliaz
-
 ## Aliaz -end
