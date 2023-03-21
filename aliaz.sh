@@ -17,14 +17,14 @@
 #---
 # Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSHRC
 
-# Info: The code creates a  ~/.aliaz File
+# Info: The code creates ~/.aliaz where you can find your aliaz history
 
 #aliaz               # Creates an alias with the name of the current directory pointing to the current directory
 #aliaz my_alias      # Creates an alias named "my_alias" pointing to the current directory
 #aliaz my_alias ~/example_dir  # Creates an alias named "my_alias" pointing to the "~/example_dir" directory
 #---
 
-# Aliaz -start
+# aliaz -start
 # Custom 'cd' function to support directory aliases
 cd() {
     # If no argument is provided, use the default 'cd' behavior to navigate to the home directory
@@ -62,7 +62,7 @@ aliaz() {
     # Save the alias to the '.aliaz' file for persistence
     echo "dir_aliases[$alias_name]=\"$dir_path\"" >> ~/.aliaz
     # Display a confirmation message with the created alias and its associated path
-    echo "Alias created: $alias_name -> $dir_path"
+    echo "aliaz created: $alias_name -> $dir_path"
 }
 
 # Save aliases between sessions
@@ -73,4 +73,4 @@ fi
 # Load the aliases from the '.aliaz' file into the current session
 declare -A dir_aliases
 source ~/.aliaz
-## Aliaz -end
+## aliaz -end
