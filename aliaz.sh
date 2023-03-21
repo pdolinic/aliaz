@@ -1,18 +1,15 @@
-##This program is free software: you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
-##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 ## GNU General Public License for more details.
-##
 ## You should have received a copy of the GNU General Public License
 ## along with this program. If not, see <https://www.gnu.org/licenses/>.
-##
+
 ## Authors: pdolinic, GPT-4
-##
 
 #---
 # Usage: Copy the following Code at the end of your BASHRC or ZSHRC , then Source the BASH or ZSHRC
@@ -23,6 +20,18 @@
 #aliaz my_alias      # Creates an alias named "my_alias" pointing to the current directory
 #aliaz my_alias ~/example_dir  # Creates an alias named "my_alias" pointing to the "~/example_dir" directory
 #---
+
+#               
+#  ▄▄▄       ██▓     ██▓ ▄▄▄      ▒███████▒
+# ▒████▄    ▓██▒    ▓██▒▒████▄    ▒ ▒ ▒ ▄▀░
+# ▒██  ▀█▄  ▒██░    ▒██▒▒██  ▀█▄  ░ ▒ ▄▀▒░
+# ░██▄▄▄▄██ ▒██░    ░██░░██▄▄▄▄██   ▄▀▒   ░
+#  ▓█   ▓██▒░██████▒░██░ ▓█   ▓██▒▒███████▒
+#  ▒▒   ▓▒█░░ ▒░▓  ░░▓   ▒▒   ▓▒█░░▒▒ ▓░▒░▒
+#   ▒   ▒▒ ░░ ░ ▒  ░ ▒ ░  ▒   ▒▒ ░░░▒ ▒ ░ ▒
+#   ░   ▒     ░ ░    ▒ ░  ░   ▒   ░ ░ ░ ░ ░
+#       ░  ░    ░  ░ ░        ░  ░  ░ ░
+#                                 ░
 
 # aliaz -start
 # Custom 'cd' function to support directory aliases
