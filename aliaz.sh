@@ -118,6 +118,20 @@ aliac() {
     fi
 }
 
+# list_alias() - Function to list all directory and command aliases
+list_alias() {
+    echo "Directory Aliases:"
+    for key in "${(k)dir_aliases[@]}"; do
+        echo "$key -> ${dir_aliases[$key]}"
+    done
+
+    echo
+    echo "Command Aliases:"
+    for key in "${(k)command_aliases[@]}"; do
+        echo "$key -> ${command_aliases[$key]}"
+    done
+}
+
 # Create ~/.aliaz || ~/.command_aliac if they do not exist
 [ ! -f ~/.aliaz ] && { touch ~/.aliaz; chmod 600 ~/.aliaz; }
 [ ! -f ~/.command_aliac ] && { touch ~/.command_aliac; chmod 600 ~/.command_aliac; }
