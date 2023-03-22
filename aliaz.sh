@@ -24,6 +24,16 @@
 # aliac my_alias = command [args] # Creates an alias named "my_alias" with the command "command" and optional arguments "args"
 #--------------------------------------------------------------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------------------------------------------------------------
+# Backup & Remove Duplicates - Keep your ~/.aliaz and ~/.command_aliac Files
+#--------------------------------------------------------------------------------------------------------------------------------
+# Cleanup ~/.command_aliac
+# cp ~/.command_aliac ~/.command_aliac.backup && perl -ne '/^function (\w+)/; $func = $1; print unless $seen{$func}++' ~/.command_aliac > ~/.command_aliac.temp && mv ~/.command_aliac.temp ~/.command_aliac 
+#--------------------------------------------------------------------------------------------------------------------------------
+# Cleanup ~/.aliaz
+# cp ~/.aliaz ~/.aliaz.backup && awk '!seen[$0]++' ~/.aliaz > ~/.aliaz.temp && mv ~/.aliaz.temp ~/.aliaz
+#--------------------------------------------------------------------------------------------------------------------------------
+
 
 #               
 #  ▄▄▄       ██▓     ██▓ ▄▄▄      ▒███████▒
