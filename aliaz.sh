@@ -38,8 +38,8 @@
 #                                 ░
 
 #--------------------------------------------------------------------------------------------------------------------------------
-cd() {
-    # Custom 'cd' function to support directory aliases
+ad() {
+    # Custom 'ad' (aliazchange directory) function to support directory aliases
     # If no argument is provided, use the default 'cd' behavior to navigate to the home directory
     if [ -z "$1" ]; then
         builtin cd
