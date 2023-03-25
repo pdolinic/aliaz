@@ -119,7 +119,7 @@ aliac() {
 }
 
 # list_alias() - Function to list all directory and command aliases
-list_alias() {
+laliaz() {
     echo "Directory Aliases:"
     for key in "${(k)dir_aliases[@]}"; do
         echo "$key -> ${dir_aliases[$key]}"
@@ -132,6 +132,26 @@ list_alias() {
     done
 }
 
+daliaz() {
+    if [ -z "$1" ]; then
+        echo "Usage: delete_alias <alias>"
+        return
+    fi
+
+    if [[ -v dir_aliases[$1] ]]; then
+        unset "dir_aliases[$1]"
+        sed -i "/dir_aliases\[$1\]/d" ~/.aliaz
+        echo "Directory alias '$1' removed."
+    elif declare -F "$1" >/dev/null; then
+        sed -i "/function $1\(\)/,+1d" ~/.command_aliac
+        unset -f "$1" 2>/dev/null
+        unset "command_aliases[$1]" # Add this line to update the command_aliases associative array
+        echo "Command alias '$1' removed."
+    else
+        echo "Alias '$1' not found."
+    fi
+}
+
 # Create ~/.aliaz || ~/.command_aliac if they do not exist
 [ ! -f ~/.aliaz ] && { touch ~/.aliaz; chmod 600 ~/.aliaz; }
 [ ! -f ~/.command_aliac ] && { touch ~/.command_aliac; chmod 600 ~/.command_aliac; }
@@ -141,9 +161,15 @@ declare -A dir_aliases command_aliases
 source ~/.aliaz
 source ~/.command_aliac
 
-# Load the command aliases from the '.command_aliac' file into the current session
 while IFS= read -r line; do
     eval "$line"
+    # Extract the alias name and value and store them in the 'command_aliases' associative array
+    if [[ $line =~ "function ([a-zA-Z0-9_]+)\(\) \{ (.+); \}" ]]; then
+        alias_name="${match[1]}"
+        alias_value="${match[2]}"
+        command_aliases[$alias_name]="$alias_value"
+    fi
 done < ~/.command_aliac
+
 #--------------------------------------------------------------------------------------------------------------------------------
 
