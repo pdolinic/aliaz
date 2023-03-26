@@ -118,33 +118,34 @@ aliac() {
     fi
 }
 
-# Use this for ZSH: List all directory and command aliases
+# List all directory and command aliases
 alial () {
     echo "Directory Aliases:"
-    for key in "${(k)dir_aliases[@]}"; do
+    for key in "${!dir_aliases[@]}"; do
         echo "$key -> ${dir_aliases[$key]}"
     done
 
     echo
     echo "Command Aliases:"
-    for key in "${(k)command_aliases[@]}"; do
+    for key in "${!command_aliases[@]}"; do
         echo "$key -> ${command_aliases[$key]}"
     done
 }
 
-# Use this for Bash: List all directory and command aliases
-#alial () {
-#    echo "Directory Aliases:"
-#    for key in "${!dir_aliases[@]}"; do
-#        echo "$key -> ${dir_aliases[$key]}"
-#    done
-#
-#    echo
-#    echo "Command Aliases:"
-#    for key in "${!command_aliases[@]}"; do
-#        echo "$key -> ${command_aliases[$key]}"
-#    done
-#}
+if [ "$ZSH_VERSION" ]; then
+    alial () {
+        echo "Directory Aliases:"
+        for key in "${(k)dir_aliases[@]}"; do
+            echo "$key -> ${dir_aliases[$key]}"
+        done
+
+        echo
+        echo "Command Aliases:"
+        for key in "${(k)command_aliases[@]}"; do
+            echo "$key -> ${command_aliases[$key]}"
+        done
+    }
+fi
 
 # Delete aliases
 aliad () {
