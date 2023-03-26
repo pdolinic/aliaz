@@ -62,19 +62,20 @@ ad() {
     fi
 }
 
+# Set shortcuts for directories
 aliaz() {
     # If no arguments are provided, set the alias name to the name of the current directory
     if [ "$#" -eq 0 ]; then
-        alias_name=$(basename "$(realpath -e .)")
-        dir_path=$(realpath -e .)
+        alias_name=$(basename "$(cd . && pwd)")
+        dir_path=$(cd . && pwd)
     # If one argument is provided, set the alias name to the provided argument and the path to the current directory
     elif [ "$#" -eq 1 ]; then
         alias_name=$1
-        dir_path=$(realpath -e .)
+        dir_path=$(cd . && pwd)
     # If two arguments are provided, set the alias name to the first argument and the path to the second argument
     elif [ "$#" -eq 2 ]; then
         alias_name=$1
-        dir_path=$(realpath -e $2)
+        dir_path=$(cd $2 && pwd)
     else
         echo "Usage: aliaz [alias] [path]"
         return
@@ -87,6 +88,7 @@ aliaz() {
     echo "aliaz created: $alias_name -> $dir_path"
 }
 
+# Set shortcuts for non directory commands
 aliac() {
     # If only one argument is provided, attempt to execute the aliac with the given name
     if [ "$#" -eq 1 ]; then
