@@ -118,8 +118,8 @@ aliac() {
     fi
 }
 
-# list_alias() - Function to list all directory and command aliases
-aliaz_list () {
+# List all directory and command aliases
+alial () {
     echo "Directory Aliases:"
     for key in "${(k)dir_aliases[@]}"; do
         echo "$key -> ${dir_aliases[$key]}"
@@ -132,7 +132,8 @@ aliaz_list () {
     done
 }
 
-aliaz_remove () {
+# Delete aliases
+aliad () {
     if [ -z "$1" ]; then
         echo "Usage: delete_alias <alias>"
         return
@@ -170,6 +171,5 @@ while IFS= read -r line; do
         command_aliases[$alias_name]="$alias_value"
     fi
 done < ~/.command_aliac
-
 #--------------------------------------------------------------------------------------------------------------------------------
 
