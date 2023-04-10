@@ -49,30 +49,22 @@
 
 #--------------------------------------------------------------------------------------------------------------------------------
 ad() {
-    # Custom 'ad' (aliazchange directory) function to support directory aliases
-    # If no argument is provided, use the default 'cd' behavior to navigate to the home directory
     if [ -z "$1" ]; then
         builtin cd
-    # If the provided argument is a directory alias, navigate to the aliased directory
     elif [[ -v dir_aliases[$1] ]]; then
         builtin cd "${dir_aliases[$1]}"
-    # Otherwise, use the default 'cd' behavior with the provided argument
     else
         builtin cd "$@"
     fi
 }
 
-# Set shortcuts for directories
 aliaz() {
-    # If no arguments are provided, set the alias name to the name of the current directory
     if [ "$#" -eq 0 ]; then
         alias_name=$(basename "$(cd . && pwd)")
         dir_path=$(cd . && pwd)
-    # If one argument is provided, set the alias name to the provided argument and the path to the current directory
     elif [ "$#" -eq 1 ]; then
         alias_name=$1
         dir_path=$(cd . && pwd)
-    # If two arguments are provided, set the alias name to the first argument and the path to the second argument
     elif [ "$#" -eq 2 ]; then
         alias_name=$1
         dir_path=$(cd $2 && pwd)
@@ -80,47 +72,35 @@ aliaz() {
         echo "Usage: aliaz [alias] [path]"
         return
     fi
-    # Add the alias and its associated path to the 'dir_aliases' associative array
     dir_aliases[$alias_name]=$dir_path
-    # Save the alias to the '.aliaz' file for persistence
     echo "dir_aliases[$alias_name]=\"$dir_path\"" >> ~/.aliaz
-    # Display a confirmation message with the created alias and its associated path
     echo "aliaz created: $alias_name -> $dir_path"
+    hashsum_files
 }
 
-# Set shortcuts for non directory commands
 aliac() {
-    # If only one argument is provided, attempt to execute the aliac with the given name
     if [ "$#" -eq 1 ]; then
         if declare -f "$1" >/dev/null; then
-            # Execute the aliac if it exists
             eval "$1"
         else
             echo "Unknown parameter: $1"
         fi
-    # If more than two arguments are provided, create a new aliac with the given name and command
     elif [ "$#" -gt 2 ]; then
-        # Set the command_name variable to the first argument
         command_name=$1
-        # Shift the arguments to remove the command_name from the arguments list
         shift
-        # Check for the equal sign and remove it from the arguments
         if [ "$1" = "=" ]; then
             shift
         fi
-        # Combine the remaining arguments into the command_value variable
         command_value="$*"
-        # Add the new aliac to the .command_aliac file for persistence
         echo "function $command_name() { $command_value; }" >> ~/.command_aliac
-        # Create the new aliac in the current session
         eval "function $command_name() { $command_value; }"
         echo "Command alias created: $command_name -> $command_value"
+        hashsum_files
     else
         echo "Usage: aliac [alias] [=] [command] [args] or aliac [alias]"
     fi
 }
 
-# List all directory and command aliases
 alial () {
     echo "Directory Aliases:"
     for key in "${!dir_aliases[@]}"; do
@@ -149,7 +129,6 @@ if [ "$ZSH_VERSION" ]; then
     }
 fi
 
-# Delete aliases
 aliad () {
     if [ -z "$1" ]; then
         echo "Usage: delete_alias <alias>"
@@ -160,33 +139,61 @@ aliad () {
         unset "dir_aliases[$1]"
         sed -i "/dir_aliases\[$1\]/d" ~/.aliaz
         echo "Directory alias '$1' removed."
+        hashsum_files
     elif declare -F "$1" >/dev/null; then
         sed -i "/function $1\(\)/,+1d" ~/.command_aliac
         unset -f "$1" 2>/dev/null
-        unset "command_aliases[$1]" # Add this line to update the command_aliases associative array
+        unset "command_aliases[$1]"
         echo "Command alias '$1' removed."
+        hashsum_files
     else
         echo "Alias '$1' not found."
     fi
 }
 
-# Create ~/.aliaz || ~/.command_aliac if they do not exist
+hashsum_files() {
+    sha256sum ~/.aliaz > ~/.aliaz.sha256
+    sha256sum ~/.command_aliac > ~/.command_aliac.sha256
+}
+
+load_and_verify() {
+    if [ -f ~/.aliaz.sha256 ] && sha256sum --status -c ~/.aliaz.sha256; then
+        source ~/.aliaz
+    else
+        echo "Warning: ~/.aliaz file hash sum mismatch or hash file not found. Not loading aliases."
+    fi
+
+    if [ -f ~/.command_aliac.sha256 ] && sha256sum --status -c ~/.command_aliac.sha256; then
+        source ~/.command_aliac
+    else
+        echo "Warning: ~/.command_aliac file hash sum mismatch or hash file not found. Not loading command aliases."
+    fi
+}
+
+display_hashsums() {
+    echo "Hash sum for ~/.aliaz:"
+    [ -f ~/.aliaz.sha256 ] && cat ~/.aliaz.sha256 || echo "Hash file not found."
+
+    echo "Hash sum for ~/.command_aliac:"
+    [ -f ~/.command_aliac.sha256 ] && cat ~/.command_aliac.sha256 || echo "Hash file not found."
+}
+
+
 [ ! -f ~/.aliaz ] && { touch ~/.aliaz; chmod 600 ~/.aliaz; }
 [ ! -f ~/.command_aliac ] && { touch ~/.command_aliac; chmod 600 ~/.command_aliac; }
 
-# Load the directory and command aliases into the current session
 declare -A dir_aliases command_aliases
-source ~/.aliaz
-source ~/.command_aliac
+load_and_verify
 
 while IFS= read -r line; do
     eval "$line"
-    # Extract the alias name and value and store them in the 'command_aliases' associative array
     if [[ $line =~ "function ([a-zA-Z0-9_]+)\(\) \{ (.+); \}" ]]; then
-        alias_name="${match[1]}"
-        alias_value="${match[2]}"
+        alias_name="${BASH_REMATCH[1]}"
+        alias_value="${BASH_REMATCH[2]}"
         command_aliases[$alias_name]="$alias_value"
     fi
 done < ~/.command_aliac
-#--------------------------------------------------------------------------------------------------------------------------------
 
+display_hashsums
+#typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet #add for ZSHRC
+#--------------------------------------------------------------------------------------------------------------------------------
