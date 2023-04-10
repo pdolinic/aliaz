@@ -188,5 +188,18 @@ while IFS= read -r line; do
         command_aliases[$alias_name]="$alias_value"
     fi
 done < ~/.command_aliac
+
+# Add some colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+LIGHT_CYAN='\033[1;36m'
+NC='\033[0m' # No Color
+
+# Minor tamper detection -  Print the SHA256 sums with some formatting and colors
+printf "${GREEN}~/.command_aliac:${NC} ${LIGHT_CYAN}%s${NC}\n" "$(sha256sum ~/.command_aliac | awk '{print $1}')"
+printf "${GREEN}~/.aliaz:${NC} ${LIGHT_CYAN}%s${NC}\n" "$(sha256sum ~/.aliaz | awk '{print $1}')"
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet #uncomment this line for ZSH & comment for Bash
+
 #--------------------------------------------------------------------------------------------------------------------------------
 
